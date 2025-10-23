@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto mt-8">
+  <h2 class="text-2xl font-bold mb-6">📊 Librarian Management Dashboard</h2>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-6 mb-8">
+    <div class="bg-blue-600 text-white rounded-xl p-6 text-center">
+      <h3 class="text-lg">Total Librarians</h3>
+      <p class="text-3xl font-bold">{{ total }}</p>
+    </div>
+    <div class="bg-green-600 text-white rounded-xl p-6 text-center">
+      <h3 class="text-lg">Active</h3>
+      <p class="text-3xl font-bold">{{ active }}</p>
+    </div>
+    <div class="bg-red-600 text-white rounded-xl p-6 text-center">
+      <h3 class="text-lg">Inactive</h3>
+      <p class="text-3xl font-bold">{{ inactive }}</p>
+    </div>
+    <div class="bg-yellow-600 text-white rounded-xl p-6 text-center">
+      <h3 class="text-lg">Total Books</h3>
+      <p class="text-3xl font-bold">{{ total_books }}</p>
+    </div>
+    <div class="bg-purple-600 text-white rounded-xl p-6 text-center">
+      <h3 class="text-lg">Books Issued</h3>
+      <p class="text-3xl font-bold">{{ total_books_issued }}</p>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="mb-6">
+    <a href="{% url 'add_librarian' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg">➕ Add Librarian</a>
+  </div>
+
+  <!-- Librarian List -->
+  <div class="bg-white shadow-md rounded-lg">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Email</th>
+          <th class="p-3 text-center">Status</th>
+          <th class="p-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for librarian in librarians %}
+        <tr class="border-b">
+          <td class="p-3">{{ librarian.first_name }} {{ librarian.last_name }}</td>
+          <td class="p-3">{{ librarian.email }}</td>
+          <td class="p-3 text-center">
+            {% if librarian.is_active %}
+              <span class="text-green-600 font-semibold">Active</span>
+            {% else %}
+              <span class="text-red-600 font-semibold">Suspended</span>
+            {% endif %}
+          </td>
+          <td class="p-3 text-center">
+           <a href="{% url 'edit_librarian' librarian.slug %}" class="px-2 py-1 bg-blue-500 text-white rounded">✏️ Edit</a>
+            <a href="{% url 'toggle_librarian_status' librarian.slug %}" class="px-2 py-1 bg-yellow-500 text-white rounded">
+              {% if librarian.is_active %} 🚫 Suspend {% else %} ✅ Activate {% endif %}
+            </a>
+            <a href="{% url 'delete_librarian' librarian.slug %}" class="px-2 py-1 bg-red-600 text-white rounded">🗑️ Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center p-4 text-gray-500">No librarians found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

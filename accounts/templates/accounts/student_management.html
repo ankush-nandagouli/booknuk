@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Student Management</h1>
+
+    <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+      <input type="text" id="search" placeholder="Search by name or email..."
+        class="border p-2 w-full max-w-sm rounded-md dark:bg-gray-800 dark:text-white">
+
+      <select id="statusFilter" class="p-2 rounded-md border dark:bg-gray-800 dark:text-white">
+        <option value="">All</option>
+        <option value="active">Active</option>
+        <option value="suspended">Suspended</option>
+      </select>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-100 dark:bg-gray-700">
+            <th class="p-3">Name</th>
+            <th class="p-3">Email</th>
+            <th class="p-3">Last Login</th>
+            <th class="p-3">Status</th>
+            <th class="p-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTable">
+          {% for student in students %}
+          <tr class="border-b dark:border-gray-600" data-status=" {% if student.is_active %} active {% else %} suspend {% endif %}">
+            <td class="p-3">{{ student.username }}</td>
+            <td class="p-3">{{ student.email }}</td>
+            <td class="p-3">{{ student.last_login|date:"Y-m-d H:i:s" }}</td>
+            <td class="p-3">
+              {% if student.is_active %}
+              <span class="px-2 py-1 rounded-full text-sm font-semibold bg-green-200 text-green-800">
+                Active
+              </span>
+              {% else %}
+              <span class="px-2 py-1 rounded-full text-sm font-semibold bg-red-200 text-red-800">
+                Suspended
+              </span>
+              {% endif %}
+            </td>
+            <td class="p-3 space-x-2">
+             <a href="{% url 'view_student_profile' student.id %}" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                View Profile
+            </a>
+             <form action="{% url 'toggle_suspend_student' student.id %}" method="post" style="display: inline;">
+                 {% csrf_token %}
+                <button type="submit" class="{% if student.is_active %}bg-red-500 hover:bg-red-600{% else %}bg-green-500 hover:bg-green-600{% endif %} text-white px-3 py-1 rounded">
+                   {% if student.is_active %}Suspend{% else %}Activate{% endif %}
+                </button>
+             </form>
+             <a href="{% url 'books:student_book_history' student.id %}" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                Book History
+            </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+
+<script>
+
+
+
+
+// Search + filter
+document.getElementById('search').addEventListener('input', filterTable);
+document.getElementById('statusFilter').addEventListener('change', filterTable);
+
+function filterTable() {
+  const searchVal = document.getElementById('search').value.toLowerCase();
+  const statusVal = document.getElementById('statusFilter').value;
+
+  document.querySelectorAll('#studentTable tr').forEach(row => {
+    const name = row.children[0].textContent.toLowerCase();
+    const email = row.children[1].textContent.toLowerCase();
+    const status = row.children[3].textContent.toLowerCase();
+
+    const matchesSearch = name.includes(searchVal) || email.includes(searchVal);
+    const matchesStatus = !statusVal || status.includes(statusVal);
+
+    row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+  });
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-xl">
+    <h2 class="text-2xl font-bold text-center mb-2">
+        📚 Book History of <span class="text-indigo-600">{{ student.username }}</span>
+    </h2>
+    <p class="text-gray-500 text-center mb-6">Academic Session: {{ student.academic_session }}</p>
+
+    <!-- 🔹 Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="p-4 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white rounded-lg shadow">
+            <p class="text-sm">📘 Total Issued</p>
+            <p class="text-2xl font-bold">{{ issued_books|length }}</p>
+        </div>
+        <div class="p-4 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow">
+            <p class="text-sm">✅ Returned</p>
+            <p class="text-2xl font-bold">{{ returned_count }}</p>
+        </div>
+        <div class="p-4 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-lg shadow">
+            <p class="text-sm">❌ Pending</p>
+            <p class="text-2xl font-bold">{{ pending_count }}</p>
+        </div>
+        <div class="p-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-lg shadow">
+            <p class="text-sm">💰 Total Fine</p>
+            <p class="text-2xl font-bold">₹{{ total_fine }}</p>
+        </div>
+    </div>
+
+    <!-- 🔹 Tabs -->
+    <div class="flex justify-center space-x-4 mb-6">
+        <button class="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 filter-btn active" data-status="">
+            All
+        </button>
+        <button class="px-4 py-2 rounded-full bg-green-500 text-white hover:bg-green-600 filter-btn" data-status="Returned">
+            Returned
+        </button>
+        <button class="px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 filter-btn" data-status="Pending">
+            Pending
+        </button>
+    </div>
+
+    <!-- 🔹 Search -->
+    <div class="mb-6 text-center">
+        <input type="text" id="searchInput"
+               class="w-3/4 p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500"
+               placeholder="🔍 Search by book title...">
+    </div>
+
+    {% if issued_books %}
+    <!-- 🔹 Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-center border-collapse rounded-lg overflow-hidden shadow-md" id="historyTable">
+            <thead class="bg-indigo-600 text-white">
+                <tr>
+                    <th class="p-3">📖 Title</th>
+                    <th class="p-3">📅 Issue Date</th>
+                    <th class="p-3">⏳ Due Date</th>
+                    <th class="p-3">📤 Return Date</th>
+                    <th class="p-3">💰 Fine</th>
+                    <th class="p-3">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for entry in issued_books %}
+                <tr class="hover:bg-gray-50 transition duration-200
+                           {% if not entry.return_date and entry.due_date < today %}
+                               bg-red-50 animate-pulse
+                           {% endif %}">
+                    <td class="p-3 font-medium">{{ entry.book.title }}</td>
+                    <td class="p-3">{{ entry.issue_date }}</td>
+                    <td class="p-3">{{ entry.due_date }}</td>
+                    <td class="p-3">
+                        {% if entry.return_date %}
+                            <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
+                                ✔ {{ entry.return_date }}
+                            </span>
+                        {% else %}
+                            <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">
+                                Not Returned
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="p-3">
+                        {% if entry.fine > 0 %}
+                            <span class="text-red-600 font-bold">₹{{ entry.fine }}</span>
+                        {% else %}
+                            <span class="text-green-600">₹0</span>
+                        {% endif %}
+                    </td>
+                    <td class="status p-3">
+                        {% if entry.return_date %}
+                            <span class="px-3 py-1 rounded-full bg-green-500 text-white text-xs">Returned</span>
+                        {% else %}
+                            <span class="px-3 py-1 rounded-full bg-red-500 text-white text-xs">Pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="text-center py-10">
+        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+             alt="No Books" class="w-28 mx-auto opacity-70 mb-4">
+        <p class="text-gray-500 text-lg">No book history found for {{ student.username }}</p>
+    </div>
+    {% endif %}
+
+    <!-- 🔹 Export Buttons -->
+    <div class="text-center mt-6 space-x-3">
+        <a href="?export=csv" class="px-5 py-2 border border-indigo-500 text-indigo-600 rounded-lg hover:bg-indigo-50 shadow">
+            ⬇ Export CSV
+        </a>
+    </div>
+</div>
+
+<script>
+    // 🔹 Search filter
+    document.getElementById("searchInput").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase();
+        document.querySelectorAll("#historyTable tbody tr").forEach(row => {
+            let title = row.cells[0].innerText.toLowerCase();
+            row.style.display = title.includes(filter) ? "" : "none";
+        });
+    });
+
+    // 🔹 Tabs filter
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            document.querySelectorAll(".filter-btn").forEach(el => el.classList.remove("ring-2", "ring-offset-2"));
+            this.classList.add("ring-2", "ring-offset-2");
+
+            let filter = this.dataset.status;
+            document.querySelectorAll("#historyTable tbody tr").forEach(row => {
+                let status = row.querySelector(".status").innerText.trim();
+                row.style.display = (!filter || status === filter) ? "" : "none";
+            });
+        });
+    });
+</script>
+{% endblock %}

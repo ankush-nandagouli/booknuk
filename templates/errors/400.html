@@ -1,0 +1,22 @@
+{% extends "errors/error_base.html" %}
+{% block title %}400 | Bad Request{% endblock %}
+{% block code %}400{% endblock %}
+{% block message %}Your request looks a bit off. Try again!{% endblock %}
+{% block custom_css %}
+:root {
+  --main-color: #ffaf40;
+  --bg-color1: #2e2e3a;
+  --bg-color2: #1a1a24;
+}
+{% endblock %}
+{% block extra_content %}
+<div style="margin-top:20px; animation: shake 1s infinite alternate;">
+  ⚠️
+</div>
+<style>
+@keyframes shake {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
+}
+</style>
+{% endblock %}

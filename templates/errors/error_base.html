@@ -1,0 +1,106 @@
+{% comment %} templates/errors/error_base.html {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Error{% endblock %}</title>
+  <style>
+    :root {
+      --main-color: #ff6b6b;
+      --bg-color1: #1f1f2e;
+      --bg-color2: #2b2b45;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, var(--bg-color1), var(--bg-color2));
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .error-container {
+      animation: fadeSlide 1.5s ease-in-out;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 7rem;
+      font-weight: 700;
+      color: var(--main-color);
+      margin-bottom: 0.2em;
+      animation: pulse 2s infinite alternate;
+    }
+    @keyframes pulse {
+      0% { text-shadow: 0 0 10px var(--main-color); }
+      100% { text-shadow: 0 0 25px var(--main-color); }
+    }
+
+    p {
+      font-size: 1.3rem;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    a {
+      text-decoration: none;
+      background: var(--main-color);
+      color: white;
+      padding: 10px 30px;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    a:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px var(--main-color);
+    }
+
+    /* floating shapes */
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--main-color);
+      opacity: 0.15;
+      animation: float 8s infinite ease-in-out alternate;
+    }
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-30px); }
+    }
+    .shape:nth-child(1) { width: 150px; height: 150px; top: 10%; left: 10%; animation-delay: 0s; }
+    .shape:nth-child(2) { width: 100px; height: 100px; bottom: 15%; right: 15%; animation-delay: 2s; }
+    .shape:nth-child(3) { width: 80px; height: 80px; top: 25%; right: 20%; animation-delay: 1s; }
+
+    {% block custom_css %}{% endblock %}
+  </style>
+</head>
+<body>
+  <div class="shape"></div>
+  <div class="shape"></div>
+  <div class="shape"></div>
+
+  <div class="error-container">
+    <h1>{% block code %}{% endblock %}</h1>
+    <p>{% block message %}{% endblock %}</p>
+    <a href="/">Go Home</a>
+  </div>
+
+  {% block extra_content %}{% endblock %}
+</body>
+</html>

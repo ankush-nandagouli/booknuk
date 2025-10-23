@@ -1,0 +1,20 @@
+{% extends "errors/error_base.html" %}
+{% block title %}404 | Page Not Found{% endblock %}
+{% block code %}404{% endblock %}
+{% block message %}Looks like this page took a wrong turn.{% endblock %}
+{% block custom_css %}
+:root {
+  --main-color: #ff4081;
+  --bg-color1: #1b1b2f;
+  --bg-color2: #2d2d44;
+}
+{% endblock %}
+{% block extra_content %}
+<div style="margin-top:20px; font-size:2rem; animation: floatGhost 2s infinite alternate;">👻</div>
+<style>
+@keyframes floatGhost {
+  from { transform: translateY(0); opacity: 0.8; }
+  to { transform: translateY(-15px); opacity: 1; }
+}
+</style>
+{% endblock %}

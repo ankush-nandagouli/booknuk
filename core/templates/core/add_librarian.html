@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="min-h-screen bg-gray-100 flex items-center justify-center py-10">
+  <div class="bg-white shadow-2xl rounded-3xl w-full max-w-lg p-10">
+    <h2 class="text-3xl font-extrabold text-gray-800 text-center mb-8">➕ Add Librarian</h2>
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="relative">
+        <!-- Input field with Tailwind classes -->
+        {{ field|add_class:"peer block w-full rounded-xl border border-gray-300 px-4 pt-5 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" }}
+
+        <!-- Floating label -->
+        <label for="{{ field.id_for_label }}"
+               class="absolute left-4 top-2 text-gray-400 text-sm transition-all duration-200
+               transform scale-100 origin-left peer-placeholder-shown:translate-y-5 peer-placeholder-shown:scale-100
+               peer-focus:-translate-y-1 peer-focus:scale-90 bg-white px-1">
+          {{ field.label }}
+        </label>
+
+        <!-- Field errors -->
+        {% if field.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <!-- Submit button -->
+      <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-indigo-600 hover:to-blue-500
+      text-white font-bold py-3 rounded-xl shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9l-6 6-6-6"/>
+        </svg>
+        <span>Create Librarian</span>
+      </button>
+    </form>
+
+    <p class="text-center text-gray-400 text-sm mt-6">Ensure all information is correct before submitting.</p>
+  </div>
+</div>
+
+
+{% endblock %}

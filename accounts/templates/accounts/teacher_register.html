@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto bg-white p-10 rounded-3xl shadow-2xl mt-12 border border-blue-200">
+  <h2 class="text-4xl font-extrabold mb-8 text-center text-indigo-700 tracking-tight">Register as Teacher</h2>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-10">
+    {% csrf_token %}
+
+    <!-- 👤 Account Information -->
+    <fieldset class="border border-blue-300 p-6 rounded-xl bg-blue-50 shadow-md">
+      <legend class="text-2xl font-semibold mb-4 text-blue-800">👤 Account Information</legend>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for field in user_form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-blue-800 mb-1">
+            {{ field.label }}
+          </label>
+          {{ field|add_class:"w-full border border-blue-400 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+          {% if field.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <!-- 🧑‍🏫 Teacher Profile Information -->
+    <fieldset class="border border-blue-300 p-6 rounded-xl bg-blue-50 shadow-md">
+      <legend class="text-2xl font-semibold mb-4 text-blue-800">🧑‍🏫 Teacher Details</legend>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for field in profile_form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-blue-800 mb-1">
+            {{ field.label }}
+          </label>
+          {{ field|add_class:"w-full border border-blue-400 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+          {% if field.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <!-- Submit -->
+    <button type="submit" class="w-full py-3 px-5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-lg transition duration-300 text-lg">
+       Register as Teacher
+    </button>
+  </form>
+
+  <!-- 🔴 Global Form Errors -->
+  {% if user_form.non_field_errors %}
+    <div class="mt-6 text-red-600">
+      {% for error in user_form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% if profile_form.non_field_errors %}
+    <div class="mt-6 text-red-600">
+      {% for error in profile_form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

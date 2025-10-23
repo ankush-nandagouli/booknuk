@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto mt-8 px-4">
+  <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+
+    <!-- Header -->
+    <h3 class="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400 mb-4">
+       My Issued Books
+    </h3>
+    <div class="w-20 h-1 bg-indigo-500 mx-auto rounded mb-6"></div>
+
+    {% if issued_books %}
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse text-sm">
+        <thead>
+          <tr class="bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300">
+            <th class="px-6 py-3 text-left font-semibold">📖 Title</th>
+            <th class="px-6 py-3 font-semibold">📅 Issue Date</th>
+            <th class="px-6 py-3 font-semibold">⏳ Due Date</th>
+            <th class="px-6 py-3 font-semibold">💰 Fine</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          {% for book in issued_books %}
+          <tr class="hover:bg-indigo-50 dark:hover:bg-gray-700 transition">
+            <td class="px-6 py-4 font-medium text-gray-800 dark:text-gray-200">{{ book.book.title }}</td>
+            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ book.issue_date }}</td>
+            <td class="px-6 py-4">
+              {% if book.due_date < today %}
+                <span class="bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 px-3 py-1 rounded-lg text-xs font-semibold animate-pulse">
+                  Overdue: {{ book.due_date }}
+                </span>
+              {% else %}
+                <span class="bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 px-3 py-1 rounded-lg text-xs font-semibold">
+                  {{ book.due_date }}
+                </span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4">
+              {% if book.fine_amount > 0 %}
+                <span class="text-red-600 font-bold animate-pulse">₹{{ book.fine_amount }}</span>
+              {% else %}
+                <span class="text-green-600 font-semibold">₹0</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <!-- Empty state -->
+    <div class="flex flex-col items-center justify-center py-12">
+      <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+           alt="No Books" class="w-32 h-32 mb-4 opacity-80">
+      <p class="text-gray-500 dark:text-gray-400 text-lg mb-3">You haven’t issued any books yet.</p>
+      <a href="{% url 'books:browse_books' %}"
+         class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition transform hover:scale-105">
+        Browse Books 📚
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

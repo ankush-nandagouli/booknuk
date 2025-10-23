@@ -1,0 +1,56 @@
+<!-- Currently not in use
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-indigo-100 dark:border-gray-700 overflow-hidden">
+  <div class="px-6 py-5 bg-gradient-to-r from-indigo-50 to-white dark:from-gray-800 dark:to-gray-800 border-b border-indigo-100 dark:border-gray-700">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">📚 Bulk Upload Books</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">CSV for data + ZIP for cover images (named <code>isbn.jpg/png</code>). PDFs are not supported here.</p>
+  </div>
+
+  <div class="px-6 py-6 space-y-5">
+    {% if messages %}
+      <div class="space-y-2">
+        {% for message in messages %}
+          <div class="px-4 py-3 rounded-xl border
+            {% if message.tags == 'error' %} bg-red-50 text-red-700 border-red-200
+            {% elif message.tags == 'success' %} bg-green-50 text-green-700 border-green-200
+            {% else %} bg-yellow-50 text-yellow-700 border-yellow-200 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Upload CSV</label>
+        <input type="file" name="csv_file" accept=".csv" required
+               class="w-full px-4 py-2 border border-indigo-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 dark:text-white">
+        <p class="text-xs text-gray-500 mt-1">Columns: title,author,isbn,total_copies,available_copies,description,category</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Upload Cover Images (ZIP)</label>
+        <input type="file" name="cover_zip" accept=".zip" required
+               class="w-full px-4 py-2 border border-indigo-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 dark:text-white">
+        <p class="text-xs text-gray-500 mt-1">Name files as <code>isbn.jpg</code> / <code>isbn.png</code>.</p>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <a href="{% static 'samples/books_sample.csv' %}" class="text-sm text-indigo-600 hover:underline">Download CSV sample</a>
+        <button type="submit"
+                class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow transition border border-indigo-700">
+          Upload
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-6 text-xs text-gray-500 dark:text-gray-400 border-t pt-4">
+      Missing a cover? The UI will show <code>/static/images/default_cover.jpg</code>.
+    </div>
+  </div>
+</div>
+{% endblock %}
+-->

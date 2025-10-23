@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6 mt-8">
+  <h2 class="text-2xl font-bold text-indigo-700 mb-4">👤 {{ student.username }}</h2>
+
+  <p><strong>Email:</strong> {{ student.email }}</p>
+  <p><strong>Status:</strong>
+    {% if student.is_active %}
+      <span class="text-green-600 font-semibold">Active</span>
+    {% else %}
+      <span class="text-red-600 font-semibold">Suspended</span>
+    {% endif %}
+  </p>
+  <p><strong>Total Fine:</strong> ₹{{ total_fine }}</p>
+
+  <h3 class="text-lg font-semibold mt-6 mb-3">📚 Issued Books</h3>
+  <table class="min-w-full border border-gray-200">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="px-4 py-2">Book</th>
+        <th class="px-4 py-2">Issue Date</th>
+        <th class="px-4 py-2">Due Date</th>
+        <th class="px-4 py-2">Return Date</th>
+        <th class="px-4 py-2">Fine</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ib in issued_books %}
+      <tr class="text-sm">
+        <td class="px-4 py-2">{{ ib.book.title }}</td>
+        <td class="px-4 py-2">{{ ib.issue_date }}</td>
+        <td class="px-4 py-2">{{ ib.due_date }}</td>
+        <td class="px-4 py-2">{{ ib.return_date|default:"-" }}</td>
+        <td class="px-4 py-2">₹{{ ib.fine }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-center py-3">No books issued yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="mt-6 flex space-x-3">
+    <a href="{% url 'faculty:suspend_students' student.slug %}" class="px-4 py-2 bg-red-500 text-white rounded-md">
+      {% if student.is_active %} Suspend {% else %} Activate {% endif %}
+    </a>
+    <a href="{% url 'faculty:student_list' %}" class="px-4 py-2 bg-gray-300 rounded-md">Back to List</a>
+  </div>
+</div>
+{% endblock %}

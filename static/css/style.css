@@ -1,0 +1,36 @@
+
+/*-------------------------------------*/
+    /* Responsive Landing Video Styling */
+    #landing-video-section video {
+      height: 20vh;
+      width: 100vw;
+      object-fit: cover;
+    }
+
+    @media (min-width: 768px) {
+      #landing-video-section video {
+        height: 100vh;
+        width: 100vw;
+        object-fit: cover;
+      }
+    }
+
+    /* Navbar Enhancements */
+    .navbar-link {
+      @apply text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition;
+    }
+
+    .navbar-btn {
+      @apply text-sm px-3 py-1 rounded-md transition;
+    }
+
+
+/*------------------------------------------------------------------------------------*/
+
+/* Extra styles if needed */
+#profileModal {
+  display: none;
+}
+#profileModal.active {
+  display: flex;
+}

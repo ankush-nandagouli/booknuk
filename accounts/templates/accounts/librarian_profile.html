@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg glass-effect flex flex-col items-center Shery"
+       data-shery="zoom">
+    <!-- Profile Picture -->
+    <div class="w-32 h-32 mb-4 Shery" data-shery="float">
+      <img src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}{% static 'default_avatar.png' %}{% endif %}"
+           alt="Profile Picture"
+           class="rounded-full object-cover w-full h-full border-4 border-indigo-500"/>
+    </div>
+
+    <h2 class="text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent mb-2">
+      {{ request.user.first_name|default:request.user.username }}
+    </h2>
+    <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{{ request.user.email }}</p>
+
+    <ul class="text-sm space-y-2 text-gray-800 dark:text-gray-200 text-left w-full">
+      <li><strong>Mobile:</strong> {{ request.user.mobile_number|default:"Not Provided" }}</li>
+      <li><strong>Joined:</strong> {{ request.user.date_joined|date:"d M, Y" }}</li>
+    </ul>
+
+    <div class="mt-6 w-full">
+      <a href="{% url 'librarian_profile_update' %}"
+         class="block py-2 px-6 bg-indigo-600 text-center text-white rounded-md hover:bg-indigo-700 focus:outline-none Shery"
+         data-shery="slide">
+        Update Profile
+      </a>
+    </div>
+  </div>
+{% endblock %}

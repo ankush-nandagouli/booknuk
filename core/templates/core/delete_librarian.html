@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 p-6 bg-white rounded-xl shadow">
+  <h2 class="text-xl font-bold mb-4">🗑️ Delete Librarian</h2>
+  <p>Are you sure you want to delete librarian
+     <strong>{{ librarian.first_name }} {{ librarian.last_name }}</strong> ({{ librarian.email }})?</p>
+
+  <div class="mt-6 flex justify-between">
+    <a href="{% url 'librarian_dashboard' %}" class="px-4 py-2 bg-gray-400 text-white rounded-lg">Cancel</a>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg">
+        Confirm Delete
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-8">
+  <div class="bg-white shadow-lg rounded-2xl p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">📚 Issue a Book</h2>
+
+    <!-- Success message after book is issued -->
+    {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+          <div class="p-4 rounded-lg text-white
+            {% if message.tags == 'success' %} bg-green-500
+            {% elif message.tags == 'error' %} bg-red-500
+            {% elif message.tags == 'warning' %} bg-yellow-500
+            {% else %} bg-blue-500 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Student field -->
+      <div>
+        <label for="id_student" class="block text-gray-700 font-semibold mb-1">Select Student/Teacher</label>
+        {% render_field form.student class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none" %}
+      </div>
+
+      <!-- Book field -->
+      <div>
+        <label for="id_book" class="block text-gray-700 font-semibold mb-1">Select Book</label>
+        {% render_field form.book class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none" %}
+      </div>
+
+      <div>
+         <label class="block text-gray-700 font-semibold mb-1">Issue Date</label>
+          <input type="text" value="{{ today|date:'d-m-Y' }}" class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed" readonly>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Due Date</label>
+        <input value="{{ due_date|date:'d-m-Y' }}" type="text" readonly
+         class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-600">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+        ✅ Issue Book
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

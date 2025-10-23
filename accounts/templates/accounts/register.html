@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-6 py-12">
+    <h2 class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400 mb-8">Choose Registration Type</h2>
+
+    <div class="flex flex-col md:flex-row gap-8">
+
+        <!-- Student Registration Button -->
+        <a href="{% url 'student_register' %}" class="transform transition-transform duration-300 hover:scale-105">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 w-72 text-center hover:bg-indigo-500 dark:hover:bg-indigo-600 hover:text-white">
+                <svg class="mx-auto mb-4 w-12 h-12 text-indigo-600 dark:text-indigo-400 hover:text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21c-2.28 0-4.444-.638-6.16-1.735L12 14z" />
+                </svg>
+                <h3 class="text-2xl font-semibold mb-2">Student Registration</h3>
+                <p class="text-gray-500 dark:text-gray-300">Register as a Student to access library services.</p>
+            </div>
+        </a>
+
+        <!-- Teacher Registration Button -->
+        <a href="{% url 'teacher_register' %}" class="transform transition-transform duration-300 hover:scale-105">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 w-72 text-center hover:bg-indigo-500 dark:hover:bg-indigo-600 hover:text-white">
+                <svg class="mx-auto mb-4 w-12 h-12 text-indigo-600 dark:text-indigo-400 hover:text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 00-8 0v4H5a2 2 0 00-2 2v6h18v-6a2 2 0 00-2-2h-3V7z" />
+                </svg>
+                <h3 class="text-2xl font-semibold mb-2">Teacher Registration</h3>
+                <p class="text-gray-500 dark:text-gray-300">Register as a Teacher to manage student books.</p>
+            </div>
+        </a>
+
+    </div>
+</div>
+{% endblock %}

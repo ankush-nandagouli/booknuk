@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-2xl dark:bg-gray-900">
+    <!-- Book Title -->
+    <h1 class="text-4xl font-extrabold text-center mb-6 text-indigo-600">{{ book.title }}</h1>
+
+    <!-- Cover Image -->
+    {% if book.cover_image %}
+    <div class="flex justify-center mb-6">
+        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="w-64 h-80 object-cover rounded-lg shadow-md">
+    </div>
+    {% endif %}
+
+    <!-- Book Info -->
+    <div class="space-y-4 text-lg text-gray-700 dark:text-gray-300">
+        <p><strong>✍️ Author:</strong> {{ book.author }}</p>
+        <p><strong>📚 Category:</strong>
+            <span class="inline-block px-2 py-1 bg-indigo-100 text-indigo-800 rounded-md dark:bg-indigo-700 dark:text-white">
+                {{ book.category }}
+            </span>
+        </p>
+        <p><strong>📝 Description:</strong><br> {{ book.description|default:"No description available." }}</p>
+        <p><strong>📦 Availability:</strong>
+            {% if book.available %}
+            <span class="text-green-600 font-bold">Available ✅</span>
+            {% else %}
+            <span class="text-red-600 font-bold">Not Available ❌</span>
+            {% endif %}
+        </p>
+
+        {% if book.pdf_file %}
+        <div class="mt-6 text-center">
+            <a href="{{ book.pdf_file.url }}" download class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-6 rounded-md shadow-lg transition duration-300">
+                📥 Download PDF
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-8">
+        <a href="{% url 'books:browse_books' %}" class="text-indigo-500 hover:underline">
+            ← Back to Browse Books
+        </a>
+    </div>
+</div>
+{% endblock %}

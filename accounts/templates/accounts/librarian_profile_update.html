@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto my-10 p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl">
+  <h2 class="text-3xl font-bold text-center text-indigo-600 dark:text-indigo-400 mb-8">
+    Update Profile
+  </h2>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+
+    {% for field in form %}
+      {% if field.name == "profile_picture" %}
+        <!-- Profile Picture -->
+        <div class="flex flex-col items-center space-y-4">
+          {% if form.instance.profile_picture %}
+            <img src="{{ form.instance.profile_picture.url }}" alt="Profile Picture"
+              class="w-32 h-32 object-cover rounded-full border-4 border-indigo-500 shadow-md" />
+          {% endif %}
+          <label for="{{ field.id_for_label }}" class="text-gray-700 dark:text-gray-300 font-semibold">
+            {{ field.label }}
+          </label>
+          <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}"
+            class="block w-full border-2 border-blue-400 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2" />
+        </div>
+      {% else %}
+        {% if field.name in "first_name last_name email mobile_number staff_id shift" %}
+          <div>
+            <label for="{{ field.id_for_label }}" class="block mb-1 text-gray-700 dark:text-gray-300 font-semibold">
+              {{ field.label }}
+            </label>
+            {{ field|add_class:"w-full px-4 py-2 border-2 border-blue-400 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" }}
+            {% if field.help_text %}
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+            {% endif %}
+            {% for error in field.errors %}
+              <p class="text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    <button type="submit"
+      class="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg transition duration-300">
+      💾 Save Changes
+    </button>
+  </form>
+</div>
+{% endblock %}

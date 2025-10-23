@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="max-w-6xl mx-auto mt-10 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-indigo-100 dark:border-gray-700">
+  <div class="px-6 py-5 bg-gradient-to-r from-indigo-50 to-white dark:from-gray-800 dark:to-gray-800 border-b border-indigo-100 dark:border-gray-700">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">📝 Manual Bulk Add</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">Add multiple books at once. PDFs can be uploaded later per book.</p>
+  </div>
+
+  <div class="px-6 py-6">
+    {% if messages %}
+      <div class="mb-4 space-y-2">
+        {% for message in messages %}
+          <div class="px-4 py-3 rounded-xl border
+            {% if message.tags == 'error' %} bg-red-50 text-red-700 border-red-200
+            {% elif message.tags == 'success' %} bg-green-50 text-green-700 border-green-200
+            {% else %} bg-yellow-50 text-yellow-700 border-yellow-200 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      {{ formset.management_form }}
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {% for form in formset %}
+          <div class="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-indigo-300 transition">
+            <div class="flex justify-between mb-2">
+              <h4 class="font-semibold text-gray-700 dark:text-gray-200">Book {{ forloop.counter }}</h4>
+              {% if form.DELETE %}
+                <label class="inline-flex items-center gap-2 text-sm text-red-600">
+                  {{ form.DELETE }} Delete
+                </label>
+              {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="text-sm">Title</label>
+                {{ form.title|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
+              </div>
+              <div>
+                <label class="text-sm">Author</label>
+                {{ form.author|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
+              </div>
+              <div>
+                <label class="text-sm">Category</label>
+                {{ form.category|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
+              </div>
+              <div>
+                <label class="text-sm">ISBN</label>
+                {{ form.isbn|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
+              </div>
+              <div class="md:col-span-2">
+                <label class="text-sm">Description</label>
+                {{ form.description|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"|attr:"rows:2" }}
+              </div>
+              <div>
+                <label class="text-sm">Total Copies</label>
+                {{ form.total_copies|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
+              </div>
+              <div>
+                <label class="text-sm">Available Copies</label>
+                {{ form.available_copies|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
+              </div>
+              <div class="md:col-span-2">
+                <label class="text-sm">Cover Image</label>
+                {{ form.cover_image|add_class:"w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" }}
+              </div>
+            </div>
+
+            {% if form.errors %}
+              <div class="mt-3 text-sm text-red-600">
+                {{ form.errors }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="flex items-center justify-between mt-6">
+        <div class="space-x-2">
+          <a href="?rows=5" class="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50">5 rows</a>
+          <a href="?rows=10" class="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50">10 rows</a>
+          <a href="?rows=20" class="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50">20 rows</a>
+          <a href="?rows=50" class="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50">50 rows</a>
+        </div>
+        <button type="submit" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow border border-indigo-700">
+          Save All
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

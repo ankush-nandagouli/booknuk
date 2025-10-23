@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Registered Students{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+  <h2 class="text-3xl font-bold text-indigo-700 mb-6 text-center">
+    🎓 Registered Students
+  </h2>
+
+  <div class="overflow-x-auto shadow-md rounded-lg">
+    <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg">
+      <thead class="bg-indigo-600 text-white">
+        <tr>
+          <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Username</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Role</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Academic Session</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Mobile Number</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Date Joined</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-700 dark:text-gray-300">
+        {% for student in page_obj %}
+        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
+          <td class="px-6 py-4 font-medium">{{ student.username }}</td>
+          <td class="px-6 py-4">{{ student.email }}</td>
+          <td class="px-6 py-4">{{ student.get_role_display }}</td>
+          <td class="px-6 py-4">{{ student.academic_session|default:"N/A" }}</td>
+          <td class="px-6 py-4">{{ student.mobile_number|default:"N/A" }}</td>
+          <td class="px-6 py-4">{{ student.date_joined|date:"d M Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center py-6 text-gray-500 dark:text-gray-400">
+            No students found.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

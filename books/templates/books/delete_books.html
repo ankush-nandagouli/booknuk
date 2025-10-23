@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-6">Manage Books - Delete</h2>
+
+  <!-- Search -->
+  <form method="get" action="{% url 'books:delete_books_view' %}" class="mb-4 flex">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search by title, author, ISBN"
+           class="border p-2 flex-grow rounded-l-md focus:ring focus:border-blue-500">
+    <button type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600">Search</button>
+  </form>
+
+  <!-- Table -->
+  <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+    <table class="w-full border-collapse border border-gray-300">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border border-gray-300 p-3 text-left">Title</th>
+          <th class="border border-gray-300 p-3 text-left">Author</th>
+          <th class="border border-gray-300 p-3 text-left">ISBN</th>
+          <th class="border border-gray-300 p-3 text-center">Available</th>
+          <th class="border border-gray-300 p-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for book in page_obj %}
+        <tr class="hover:bg-gray-100">
+          <td class="border p-3">{{ book.title }}</td>
+          <td class="border p-3">{{ book.author }}</td>
+          <td class="border p-3">{{ book.isbn }}</td>
+          <td class="border p-3 text-center">{{ book.available_copies }}/{{ book.total_copies }}</td>
+          <td class="border p-3 text-center">
+            <a href="{% url 'books:delete_book_confirm' book.id %}"
+               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+               Delete
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center p-4">No books found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-4 flex justify-center space-x-2">
+    {% if page_obj.has_previous %}
+      <a href="?q={{ search_query }}&page={{ page_obj.previous_page_number }}"
+         class="px-3 py-1 border rounded hover:bg-gray-200">Previous</a>
+    {% endif %}
+
+    <span class="px-3 py-1 border rounded bg-gray-100">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}"
+         class="px-3 py-1 border rounded hover:bg-gray-200">Next</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

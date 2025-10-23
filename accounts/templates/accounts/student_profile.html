@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Student Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-10">
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-8 transition-all duration-300">
+
+    <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+      Student Profile
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300 text-sm">
+
+      <div>
+        <strong>Name:</strong> {{ student.username }}
+      </div>
+      <div>
+        <strong>Email:</strong> {{ student.email }}
+      </div>
+      <div>
+        <strong>Username:</strong> {{ student.username }}
+      </div>
+      <div>
+        <strong>Roll no:</strong> {{ student.roll_number }}
+      </div>
+      <div>
+        <strong>Last Login:</strong> {{ student.last_login|date:"F d, Y H:i:s" }}
+      </div>
+      <div>
+        <strong>Status:</strong>
+        {% if student.is_suspended %}
+          <span class="text-red-500 font-semibold">Suspended</span>
+        {% else %}
+          <span class="text-green-500 font-semibold">Active</span>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="{% url 'toggle_suspend_student' student.id %}" class="px-4 py-2 text-sm rounded-xl font-medium text-white transition-colors duration-300
+         {% if student.is_suspended %} bg-green-600 hover:bg-green-700 {% else %} bg-red-600 hover:bg-red-700 {% endif %}">
+        {% if student.is_suspended %} Unsuspend Student {% else %} Suspend Student {% endif %}
+      </a>
+
+      <a href="{% url 'student_management' %}"
+         class="px-4 py-2 text-sm rounded-xl bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-medium">
+        ← Back to Student List
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

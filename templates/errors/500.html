@@ -1,0 +1,28 @@
+{% extends "errors/error_base.html" %}
+{% block title %}500 | Server Error{% endblock %}
+{% block code %}500{% endblock %}
+{% block message %}Oops! Something broke on our end. Please try later.{% endblock %}
+{% block custom_css %}
+:root {
+  --main-color: #ff4b4b;
+  --bg-color1: #141414;
+  --bg-color2: #2a2a2a;
+}
+{% endblock %}
+{% block extra_content %}
+<div style="margin-top:20px; font-size:2rem;" class="glitch">💻</div>
+<style>
+.glitch {
+  position: relative;
+  color: var(--main-color);
+  animation: glitch 1s infinite;
+}
+@keyframes glitch {
+  0% { text-shadow: 2px 2px var(--main-color); }
+  20% { text-shadow: -2px -2px #fff; }
+  40% { text-shadow: 2px -2px var(--main-color); }
+  60% { text-shadow: -2px 2px #fff; }
+  100% { text-shadow: 2px 2px var(--main-color); }
+}
+</style>
+{% endblock %}

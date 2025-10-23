@@ -1,0 +1,20 @@
+{% extends "errors/error_base.html" %}
+{% block title %}403 | Forbidden{% endblock %}
+{% block code %}403{% endblock %}
+{% block message %}You don’t have permission to access this page.{% endblock %}
+{% block custom_css %}
+:root {
+  --main-color: #00bcd4;
+  --bg-color1: #102a43;
+  --bg-color2: #243b55;
+}
+{% endblock %}
+{% block extra_content %}
+<div style="margin-top:20px; font-size:2rem; animation: lock 1.5s infinite alternate;">🔒</div>
+<style>
+@keyframes lock {
+  from { transform: translateY(0); }
+  to { transform: translateY(-8px); }
+}
+</style>
+{% endblock %}

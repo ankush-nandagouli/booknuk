@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" class="transition-colors duration-300">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="{% static 'images/SATPUDALOGO.ico' %}"/>
+  <title>{% block title %}Library Management System{% endblock %}</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  <!-- Shery.js -->
+  <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col">
+
+{% if request.path == '/' %}
+<!-- Landing Video Section -->
+<div id="landing-video-section" class="relative w-full h-screen overflow-hidden flex items-center justify-center parallax">
+  <video autoplay muted playsinline loop class="inset-0 w-full h-full object-cover object-center z-0">
+    <source src="{% static 'videos/landing.mp4' %}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+{% endif %}
+{% if request.path != '/' %}
+<div class="fixed top-20 left-5 z-50 group">
+    <button onclick="goBack()"
+        class="relative bg-red-500 hover:bg-red-600 text-white text-xl font-bold w-12 h-12
+               flex items-center justify-center rounded-full shadow-lg transition-transform
+               transform hover:scale-110">
+        ⬅
+        <!-- Tooltip -->
+        <span class="absolute left-14 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100
+                     bg-gray-900 text-white text-sm rounded px-3 py-1 whitespace-nowrap
+                     transition-all duration-300 shadow-md glow-tooltip">
+            Back
+        </span>
+    </button>
+</div>
+{% endif %}
+
+<style>
+    /* Glow effect for tooltip */
+    .glow-tooltip {
+        text-shadow: 0 0 6px rgba(255, 100, 100, 0.8), 0 0 12px rgba(255, 50, 50, 0.6);
+        box-shadow: 0 0 8px rgba(255, 50, 50, 0.5), 0 0 14px rgba(255, 50, 50, 0.4);
+    }
+</style>
+
+<!-- Navbar -->
+<nav class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg shadow-lg sticky top-0 z-50 transition duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+
+      <!-- Logo -->
+      <a href="{% url 'home' %}" class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600 tracking-tight hover:scale-110 transform transition duration-300 magnet">
+       Digital Library
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+        <a href="/" class="navbar-link relative group magnet">
+          Home
+          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+        </a>
+        <a href="{% url 'books:browse_books' %}" class="navbar-link relative group magnet">
+          Browse Books
+          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+        </a>
+
+        {% if user.is_authenticated %}
+          {% if user.is_superuser %}
+            <a href="{% url 'librarians_dashboard' %}" class="navbar-link relative group magnet">Manage Librarian
+              <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+            </a>
+          {% elif user.is_librarian %}
+            <a href="{% url 'librarian_dashboard' %}" class="navbar-btn bg-indigo-500 text-white hover:bg-indigo-700 magnet">Dashboard
+            <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+            </a>
+            <a href="{% url 'librarian_profile' %}" class="navbar-btn bg-indigo-500 text-white hover:bg-indigo-700 magnet">Profile</a>
+            <a href="{% url 'books:add_book' %}" class="navbar-btn bg-green-500 text-white hover:bg-green-700 magnet">Add Book</a>
+          {% elif user.is_teacher %}
+            <a href="{% url 'teacher_dashboard' %}" class="navbar-btn bg-indigo-600 text-white hover:bg-indigo-700 magnet">Dashboard</a>
+          {% else %}
+            <a href="{% url 'books:my_issued_books' %}" class="navbar-btn navbar-link relative group magnet">Issued Books
+            <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+            </a>
+            <a href="/accounts/profile/" class="navbar-link relative group magnet">Profile
+            <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+            </a>
+          {% endif %}
+          <a href="/accounts/logout/" class="navbar-link relative text-red-500 hover:text-red-600 group magnet">Logout
+          <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></span>
+          </a>
+        {% else %}
+          <!-- Login Dropdown -->
+          <div class="relative">
+            <button onclick="toggleDropdown()" class="navbar-btn flex items-center magnet">
+              Login <i class="fa-solid fa-chevron-down ml-2"></i>
+            </button>
+            <div id="loginDropdown" class="hidden absolute right-0 mt-3 w-52 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-xl ring-1 ring-black/10 overflow-hidden animate-fade-in">
+              <a href="{% url 'login' %}" class="block px-4 py-2 text-sm hover:bg-indigo-100 dark:hover:bg-gray-700">Student Login</a>
+              <a href="{% url 'librarian_login' %}" class="block px-4 py-2 text-sm hover:bg-indigo-100 dark:hover:bg-gray-700">Librarian Login</a>
+              <a href="{% url 'teacher_login' %}" class="block px-4 py-2 text-sm hover:bg-indigo-100 dark:hover:bg-gray-700">Teacher Login</a>
+            </div>
+          </div>
+          <a href="/accounts/register/" class="navbar-btn magnet">Register</a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden flex items-center">
+        <button onclick="toggleMobileMenu()" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400">
+          <i class="fas fa-bars fa-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white/95 dark:bg-gray-800/95 backdrop-blur-md px-4 pt-4 pb-2 space-y-3 transition-all duration-500 ease-in-out max-h-0 overflow-hidden">
+    <a href="/" class="navbar-link block">Home</a>
+    <a href="{% url 'books:browse_books' %}" class="navbar-link block">Browse Books</a>
+    {% if user.is_authenticated %}
+      {% if user.is_superuser %}
+        <a href="{% url 'librarians_dashboard' %}">Manage Librarian</a>
+      {% elif user.is_librarian %}
+        <a href="{% url 'librarian_dashboard' %}" class="navbar-link block">Librarian Dashboard</a>
+        <a href="{% url 'books:add_book' %}" class="text-green-600 dark:text-green-400 block font-medium">Add Book</a>
+      {% elif user.is_student %}
+        <a href="{% url 'books:my_issued_books' %}" class="navbar-link block">Issued Books</a>
+      {% elif user.is_teacher %}
+        <a href="{% url 'teacher_dashboard' %}" class="navbar-link block">Teacher Dashboard</a>
+      {% else %}
+        <a href="/accounts/profile/" class="navbar-link block">Profile</a>
+      {% endif %}
+      <a href="/accounts/logout/" class="text-red-500 block font-medium">Logout</a>
+    {% else %}
+      <div class="border-t pt-2">
+        <a href="{% url 'login' %}" class="navbar-link block">Student Login</a>
+        <a href="{% url 'librarian_login' %}" class="navbar-link block">Librarian Login</a>
+        <a href="{% url 'teacher_login' %}" class="navbar-link block">Teacher Login</a>
+      </div>
+      <a href="/accounts/register/" class="navbar-link block text-indigo-600 dark:text-indigo-400 font-medium mt-2">Register</a>
+    {% endif %}
+  </div>
+</nav>
+
+{% if messages %}
+<div class="fixed top-5 right-5 z-50 space-y-3" id="toast-messages">
+  {% for message in messages %}
+    <div id="toast-message-{{ forloop.counter }}" class="relative px-6 py-4 rounded-xl shadow-lg text-white toast magnet
+      {% if message.tags == 'success' %}bg-green-600
+      {% elif message.tags == 'error' %}bg-red-600
+      {% elif message.tags == 'warning' %}bg-yellow-500
+      {% else %}bg-blue-600{% endif %}" role="alert">
+      <span class="block">{{ message }}</span>
+      <button class="absolute top-1 right-2 text-xl text-white hover:text-gray-300" onclick="this.parentElement.remove();">&times;</button>
+    </div>
+  {% endfor %}
+</div>
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('[id^="toast-message-"]').forEach(el => el.remove());
+  }, 5000);
+</script>
+{% endif %}
+
+<!-- Quote of the Day -->
+<div class="text-center text-sm italic text-gray-600 dark:text-gray-300 mt-4 magnet">
+  {% block quote %}{% endblock %}
+</div>
+
+<!-- Main Content -->
+<main class="flex-grow py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gradient-to-br from-white/90 to-gray-100 dark:from-gray-900/90 dark:to-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-xl mt-10">
+  <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-sm text-gray-600 dark:text-gray-300">
+
+    <!-- About Us -->
+    <div class="hover:scale-[1.02] transition-transform duration-300 parallax">
+      <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-3">About Us</h3>
+      <p class="leading-relaxed opacity-90">
+        E - Library is dedicated to empowering students with a modern reading experience,
+        offering access to knowledge through physical and digital resources.
+      </p>
+    </div>
+
+    <!-- Important Links -->
+    <div>
+      <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-3">Important Links</h3>
+      <ul class="space-y-2">
+        <li><a href="{% url 'home' %}" class="hover:text-blue-600 hover:underline magnet">Home</a></li>
+        <li><a href="{% url 'books:browse_books' %}" class="hover:text-blue-600 hover:underline magnet">Browse Books</a></li>
+        {% if user.authenticated %}
+        <li><a href="{% url 'login' %}" class="hover:text-blue-600 hover:underline magnet">Student Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- Connect With Us -->
+    <div>
+      <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-3">Connect With Us</h3>
+      <ul class="space-y-3">
+        <li class="flex items-center space-x-2 group magnet">
+          <i class="fab fa-facebook-f text-blue-600 group-hover:scale-125 transition duration-200"></i>
+          <a href="#" class="hover:text-blue-600 transition duration-200">Facebook</a>
+        </li>
+        <li class="flex items-center space-x-2 group magnet">
+          <i class="fab fa-instagram text-pink-600 group-hover:scale-125 transition duration-200"></i>
+          <a href="#" class="hover:text-pink-600 transition duration-200">Instagram</a>
+        </li>
+        <li class="flex items-center space-x-2 group magnet">
+          <i class="fab fa-youtube text-red-600 group-hover:scale-125 transition duration-200"></i>
+          <a href="#" class="hover:text-red-600 transition duration-200">YouTube</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="parallax">
+      <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-3">Contact</h3>
+      <p class="mb-2"><i class="fas fa-map-marker-alt mr-2 text-gray-500"></i> Balaghat, MP</p>
+      <p class="mb-2"><i class="fas fa-envelope mr-2 text-gray-500"></i> e-lib@library.com </p>
+      <p><i class="fas fa-phone-alt mr-2 text-gray-500"></i> +91 2546318XXX </p>
+    </div>
+  </div>
+
+  <!-- Bottom -->
+  <div class="border-t bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 py-4 text-center text-xs text-gray-500 dark:text-gray-400 magnet">
+    &copy; <span class="hover:underline">E - Library</span>. Developed with
+    <span class="text-red-600 animate-pulse">❤️</span> by
+    <span class="text-blue-600 dark:text-blue-400 font-medium hover:underline">Ankush Nandagouli</span>.
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/sheryjs/dist/Shery.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+<script>
+  // Shery.js Effects
+  Shery.scroll();
+  Shery.mouseFollower();
+  Shery.makeMagnet(".magnet");
+  Shery.parallax(".parallax");
+  Shery.imageEffect(".img", { style: 5, config: { intensity: 0.3 } });
+  Shery.imageEffect(".toast", { style: 3, config: { intensity: 0.2 } });
+
+  // Dropdown toggle
+  function toggleDropdown() {
+    document.getElementById("loginDropdown").classList.toggle("hidden");
+  }
+
+  // Mobile Menu toggle
+  function toggleMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+    if (menu.classList.contains("hidden")) {
+      menu.classList.remove("hidden");
+      setTimeout(() => menu.classList.remove("max-h-0"), 10);
+    } else {
+      menu.classList.add("max-h-0");
+      setTimeout(() => menu.classList.add("hidden"), 300);
+    }
+  }
+
+
+    function goBack() {
+        if (document.referrer && document.referrer !== window.location.href) {
+            window.history.back();
+        } else {
+            window.location.href = "{% url 'home' %}";
+        }
+    }
+
+</script>
+
+{% if user.is_student %}
+  {% include "chatbot/chat_widget.html" %}
+{% endif %}
+</body>
+</html>

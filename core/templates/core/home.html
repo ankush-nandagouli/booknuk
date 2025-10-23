@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<!-- Hero Section -->
+<div class="text-center mb-16">
+  <h1 class="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 mb-4">
+     Welcome to E - Library
+  </h1>
+  <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+    Explore new worlds. Discover knowledge. Ignite your mind.
+  </p>
+</div>
+
+<!-- Thought of the Day -->
+<div class="bg-gradient-to-r from-indigo-100 to-blue-100 dark:from-indigo-900 dark:to-blue-900 border-l-4 border-indigo-500 dark:border-indigo-400 px-8 py-6 rounded-xl shadow-lg mb-16 max-w-3xl mx-auto transform hover:scale-105 transition duration-300">
+  <p class="text-2xl font-semibold text-indigo-700 dark:text-indigo-300 mb-3">💡 Thought of the Day:</p>
+  <p class="text-lg italic text-gray-700 dark:text-gray-200">{{ thought }}</p>
+</div>
+
+<!-- Featured Books Carousel -->
+<div class="max-w-7xl mx-auto px-6">
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="text-4xl font-bold text-indigo-700 dark:text-indigo-400">📖 Featured Books</h2>
+  </div>
+
+  <!-- Swiper container -->
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      {% for book in featured_books %}
+      <div class="swiper-slide">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 hover:shadow-2xl transition duration-500">
+
+          {% if book.cover_image %}
+          <div class="h-50 w-full overflow-hidden">
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="h-full w-full object-cover hover:scale-110 transition duration-500">
+          </div>
+          {% else %}
+          <div class="h-72 w-full bg-indigo-100 dark:bg-gray-700 flex items-center justify-center text-indigo-500 dark:text-indigo-300 font-bold text-2xl">
+            No Image
+          </div>
+          {% endif %}
+
+          <div class="p-6">
+            <h3 class="text-lg font-bold text-indigo-600 dark:text-indigo-400 mb-1 truncate">{{ book.title }}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">by {{ book.author }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination & Navigation -->
+    <div class="swiper-pagination mt-4"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+  </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="text-center mt-16">
+  {% if user.is_authenticated %}
+    <a href="{% url 'books:browse_books' %}" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+      🚀 Browse Books
+    </a>
+  {% else %}
+    <a href="/accounts/login/" class="inline-block bg-gradient-to-r from-indigo-500 to-blue-600 hover:opacity-90 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+      🔑 Student Login
+    </a>
+  {% endif %}
+</div>
+
+<!-- Swiper.js -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  const swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      1024: { slidesPerView: 3 },
+      1280: { slidesPerView: 4 },
+    },
+  });
+</script>
+
+{% endblock %}

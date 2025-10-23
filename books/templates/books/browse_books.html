@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- ✅ Success/Error Message Box -->
+{% if messages %}
+  <div class="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+    {% for message in messages %}
+      <div class="flex items-start justify-between p-4 rounded-lg shadow-lg text-white magnet
+                  {% if message.tags == 'success' %}bg-green-500{% elif message.tags == 'error' %}bg-red-500
+                  {% elif message.tags == 'warning' %}bg-yellow-500{% else %}bg-blue-500{% endif %}
+                  transform transition duration-300 hover:scale-[1.02]">
+        <span>{{ message }}</span>
+        <button onclick="this.parentElement.remove()" class="ml-4 text-xl leading-none hover:opacity-80">×</button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- 🟪 Book Search Form -->
+<div class="max-w-7xl mx-auto p-4">
+  <h2 class="text-3xl font-extrabold mb-2 text-center text-indigo-600 tracking-tight title">
+     Browse Our Collection
+  </h2>
+  <p class="text-center text-gray-600 dark:text-gray-300 mb-8">Discover your next great read from our extensive library</p>
+
+  <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md mb-10">
+    <form id="searchForm" method="GET"
+          class="flex flex-col sm:flex-row items-center gap-3 magnet">
+      <div class="relative w-full">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+          🔍
+        </span>
+        <input type="text" name="q" value="{{ query }}"
+              placeholder="Search by title, author, or description..."
+              class="w-full pl-10 pr-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-300">
+      </div>
+
+      <select name="category"
+              class="px-4 py-3 border rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-300">
+        <option value="">All Categories</option>
+        {% for code, label in categories %}
+          <option value="{{ code }}" {% if code == category_filter %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit"
+              class="px-6 py-3 bg-indigo-500 text-white rounded-lg shadow hover:bg-indigo-600 transition-all duration-300 hover:scale-105 magnet flex items-center gap-2">
+        <span>Search</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+    </form>
+
+    <!-- Results count and filter tags -->
+    <div class="mt-4 flex flex-wrap items-center gap-2">
+      <span class="text-sm text-gray-500 dark:text-gray-400">
+        {% if page_obj %}
+          Found {{ page_obj.paginator.count }} book{{ page_obj.paginator.count|pluralize }}
+        {% else %}
+          No books found
+        {% endif %}
+      </span>
+
+      {% if query or category_filter %}
+        <span class="text-sm text-gray-500 dark:text-gray-400">•</span>
+        {% if query %}
+          <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full dark:bg-indigo-900 dark:text-indigo-200">
+            "{{ query }}"
+            <button onclick="removeSearchParam('q')" class="ml-1 text-indigo-600 dark:text-indigo-300">×</button>
+          </span>
+        {% endif %}
+
+        {% if category_filter %}
+          <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full dark:bg-purple-900 dark:text-purple-200">
+            {{ category_filter }}
+            <button onclick="removeSearchParam('category')" class="ml-1 text-purple-600 dark:text-purple-300">×</button>
+          </span>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 🟨 Book Cards -->
+  {% if page_obj %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {% for book in page_obj %}
+        <!-- Book Card -->
+        <div class="book-card group cursor-pointer relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 parallax"
+             data-modal-target="modal-{{ book.id }}">
+
+          <!-- Background Cover -->
+          <div class="h-52 overflow-hidden">
+            {% if book.cover_image %}
+              <img src="{{ book.cover_image.url }}" alt="{{ book.title }}"
+                  class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105">
+            {% else %}
+              <div class="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+          <!-- Availability Badge -->
+          <div class="absolute top-3 right-3">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {% if book.available %}bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100{% else %}bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100{% endif %}">
+              {% if book.available %}Available{% else %}Checked Out{% endif %}
+            </span>
+          </div>
+
+          <!-- Card Content -->
+          <div class="relative p-5 flex flex-col justify-end h-40">
+            <h3 class="text-lg font-bold text-white mb-1 leading-tight line-clamp-2">{{ book.title }}</h3>
+            <p class="text-sm text-gray-200 mb-2">by {{ book.author }}</p>
+            <span class="inline-block px-2 py-1 text-xs font-semibold bg-indigo-500/90 text-white rounded-full mb-3">
+              {{ book.get_category_display }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 🔳 Modal for each book -->
+        <div id="modal-{{ book.id }}" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto shadow-2xl scale-95 transition-transform duration-300 modal-content">
+            <button onclick="closeModal('modal-{{ book.id }}')"
+                    class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-gray-300 text-2xl z-10 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div class="flex flex-col md:flex-row gap-6">
+              <div class="md:w-2/5">
+                {% if book.cover_image %}
+                  <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="w-full h-64 object-cover mb-4 rounded-lg shadow-md">
+                {% else %}
+                  <div class="w-full h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center rounded-lg mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                {% endif %}
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-100">
+                    {{ book.get_category_display }}
+                  </span>
+
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
+                              {% if book.available %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100{% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100{% endif %}">
+                    {% if book.available %}Available{% else %}Checked Out{% endif %}
+                  </span>
+                </div>
+              </div>
+
+              <div class="md:w-3/5">
+                <h2 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{{ book.title }}</h2>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">by {{ book.author }}</p>
+
+                <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Description</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">{{ book.description }}</p>
+
+                <div class="flex flex-col sm:flex-row gap-3 mt-8">
+                  <a href="{{ book.get_absolute_url }}"
+                    class="flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Full Details
+                  </a>
+
+                  {% if book.pdf_file %}
+                    <a href="{{ book.pdf_file.url }}" target="_blank"
+                      class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-lg shadow transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Download PDF
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+      <div class="mt-12 flex justify-center">
+        <nav class="flex items-center gap-1">
+          {% if page_obj.has_previous %}
+            <a href="?{% if query %}q={{ query }}&{% endif %}{% if category_filter %}category={{ category_filter }}&{% endif %}page={{ page_obj.previous_page_number }}"
+               class="min-h-[38px] min-w-[38px] flex items-center justify-center px-3 py-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </a>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <span class="min-h-[38px] min-w-[38px] flex items-center justify-center px-3 py-2 bg-indigo-500 text-white rounded-lg">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <a href="?{% if query %}q={{ query }}&{% endif %}{% if category_filter %}category={{ category_filter }}&{% endif %}page={{ num }}"
+                 class="min-h-[38px] min-w-[38px] flex items-center justify-center px-3 py-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <a href="?{% if query %}q={{ query }}&{% endif %}{% if category_filter %}category={{ category_filter }}&{% endif %}page={{ page_obj.next_page_number }}"
+               class="min-h-[38px] min-w-[38px] flex items-center justify-center px-3 py-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          {% endif %}
+        </nav>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="text-center py-12">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No books found</h3>
+      <p class="text-gray-500 dark:text-gray-400">Try adjusting your search criteria or browse all categories</p>
+      <a href="?" class="inline-block mt-4 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors">
+        Clear Filters
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+.book-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Modal animation */
+.modal-content {
+  transition: transform 0.3s ease-out;
+}
+</style>
+
+<script>
+// Modal functions
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  modal.classList.remove('hidden');
+  setTimeout(() => {
+    modal.querySelector('.modal-content').classList.remove('scale-95');
+  }, 10);
+}
+
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  modal.querySelector('.modal-content').classList.add('scale-95');
+  setTimeout(() => {
+    modal.classList.add('hidden');
+  }, 200);
+}
+
+// Remove search parameter
+function removeSearchParam(param) {
+  const url = new URL(window.location);
+  url.searchParams.delete(param);
+  window.location = url;
+}
+
+// Set up event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  // Book card click to open modal
+  document.querySelectorAll('[data-modal-target]').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('a')) { // Don't trigger if clicking on a link inside the card
+        const target = card.getAttribute('data-modal-target');
+        openModal(target);
+      }
+    });
+  });
+
+  // Close modal when clicking outside
+  document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal(modal.id);
+      }
+    });
+  });
+
+  // Add keyboard escape to close modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+        if (!modal.classList.contains('hidden')) {
+          closeModal(modal.id);
+        }
+      });
+    }
+  });
+});
+
+// Initialize Shery.js effects if available
+if (typeof Shery !== 'undefined') {
+  Shery.makeMagnet(".magnet");
+  Shery.parallax(".parallax");
+  Shery.scroll();
+  Shery.mouseFollower({ skew: true, ease: 0.2 });
+}
+</script>
+
+{% endblock %}

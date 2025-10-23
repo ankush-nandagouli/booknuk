@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 p-6 bg-white rounded-xl shadow">
+  <h2 class="text-xl font-bold mb-4">Librarian Status</h2>
+  <p>Are you sure you want to {% if librarian.is_active %} suspend {% else %} activate {% endif %} librarian
+     <strong>{{ librarian.first_name }} {{ librarian.last_name }}</strong>?</p>
+
+  <div class="mt-6 flex justify-between">
+    <a href="{% url 'librarians_dashboard' %}" class="px-4 py-2 bg-gray-400 text-white rounded-lg">Cancel</a>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded-lg">
+        Confirm
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

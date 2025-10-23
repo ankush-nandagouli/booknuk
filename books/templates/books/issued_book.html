@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="container mx-auto mt-6 px-4">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+    📚 Issued Books Dashboard
+  </h2>
+
+  <!-- 🔍 Search & Filter Section -->
+  <form method="GET" class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+    <input type="text" name="q" placeholder="Search by student or book..."
+      value="{{ request.GET.q }}"
+      class="flex-1 px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+
+    <select name="filter" class="px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500">
+      <option value="">All</option>
+      <option value="overdue" {% if request.GET.filter == "overdue" %}selected{% endif %}>Overdue Only</option>
+      <option value="returned" {% if request.GET.filter == "returned" %}selected{% endif %}>Returned</option>
+      <option value="not_returned" {% if request.GET.filter == "not_returned" %}selected{% endif %}>Not Returned</option>
+    </select>
+
+    <button type="submit"
+      class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+      Apply
+    </button>
+  </form>
+
+  <!-- 📊 Table -->
+  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="min-w-full text-sm text-gray-700">
+      <thead class="bg-blue-600 text-white">
+        <tr>
+          <th class="px-4 py-3 text-left">Student</th>
+          <th class="px-4 py-3 text-left">Book</th>
+          <th class="px-4 py-3">Issue Date</th>
+          <th class="px-4 py-3">Due Date</th>
+          <th class="px-4 py-3">Return Date</th>
+          <th class="px-4 py-3">Fine</th>
+          <th class="px-4 py-3 text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for issue in issues %}
+        <tr class="border-b hover:bg-gray-50 transition">
+          <!-- Student -->
+          <td class="px-4 py-3 font-medium">{{ issue.student.username }}</td>
+
+          <!-- Book -->
+          <td class="px-4 py-3">{{ issue.book.title }}</td>
+
+          <!-- Issue Date -->
+          <td class="px-4 py-3">{{ issue.issue_date|date:"d M Y" }}</td>
+
+          <!-- Due Date -->
+          <td class="px-4 py-3 {% if issue.due_date < today and not issue.return_date %}text-red-600 font-semibold{% endif %}">
+            {{ issue.due_date|date:"d M Y" }}
+          </td>
+
+          <!-- Return Date -->
+          <td class="px-4 py-3">
+            {% if issue.return_date %}
+              {{ issue.return_date|date:"d M Y" }}
+            {% else %}
+              <span class="text-gray-400 italic">Not Returned</span>
+            {% endif %}
+          </td>
+
+          <!-- Fine -->
+          <td class="px-4 py-3">
+            {% if issue.fine %}
+              <span class="text-red-600 font-bold">₹{{ issue.fine }}</span>
+            {% else %}
+              <span class="text-green-600 font-semibold">0</span>
+            {% endif %}
+          </td>
+
+          <!-- Action -->
+          <td class="px-4 py-3 text-center">
+            {% if not issue.return_date %}
+    <a href="{% url 'books:return_book' issue.id %}"
+       class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shadow-md">
+      Return
+    </a>
+            {% else %}
+              <span class="px-3 py-1 text-xs bg-gray-200 rounded-full">Returned</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="px-4 py-6 text-center text-gray-500">
+            No issued books found.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

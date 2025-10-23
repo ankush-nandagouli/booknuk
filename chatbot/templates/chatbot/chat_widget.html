@@ -1,0 +1,56 @@
+{% load static %}
+<div id="chat-root" class="fixed bottom-6 right-6 z-50">
+
+  <!-- Floating bubble -->
+  <button
+    id="chat-toggle"
+    class="w-14 h-14 rounded-full shadow-lg bg-indigo-600 text-white flex items-center justify-center">
+    💬
+  </button>
+
+  <!-- Widget -->
+  <div
+    id="chat-widget"
+    class="hidden w-80 md:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden flex flex-col">
+
+    <!-- Header -->
+    <div class="px-4 py-2 border-b dark:border-gray-700 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center">
+          📚
+        </div>
+        <div>
+          <div class="text-sm font-semibold">Library Assistant</div>
+          <div class="text-xs text-gray-500">
+            Ask me about your books, fines, search titles...
+          </div>
+        </div>
+      </div>
+      <button id="chat-close" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-body" class="p-3 overflow-y-auto flex-1 space-y-3 text-sm">
+      <!-- messages go here -->
+    </div>
+
+    <!-- Input -->
+    <div class="p-3 border-t dark:border-gray-700 flex items-center gap-2">
+      <input
+        id="chat-input"
+        type="text"
+        class="flex-1 px-3 py-2 rounded-md border dark:bg-gray-700 dark:border-gray-600 text-sm"
+        placeholder="Ask about your issued books, fines, or search a book...">
+      <button
+        id="chat-send"
+        class="bg-indigo-600 text-white px-3 py-2 rounded-md">
+        Send
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Tailwind & Custom -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<script src="{% static 'chatbot/chat.js' %}"></script>

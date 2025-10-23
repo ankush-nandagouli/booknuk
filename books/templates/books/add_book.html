@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h2>Add Book</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div class="form-group {% if field.errors %}has-error{% endif %}">
+        {{ field.label_tag }}
+        {{ field }}
+
+        {% for error in field.errors %}
+          <div class="error-message">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <button type="submit">Add Book</button>
+  </form>
+</div>
+
+<style>
+  .form-container {
+    max-width: 550px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .form-container:hover {
+    border-color: #4a90e2;
+    box-shadow: 0px 8px 24px rgba(74, 144, 226, 0.3);
+  }
+
+  .form-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    color: #444;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #d3d3d3;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.4);
+  }
+
+  /* 🔴 Error styling */
+  .has-error input,
+  .has-error select,
+  .has-error textarea {
+    border-color: #e74c3c;
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.7);
+    background: #fff5f5;
+  }
+
+  .error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    font-weight: bold;
+    animation: glow 1s infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 5px rgba(231, 76, 60, 0.6); }
+    to { text-shadow: 0 0 10px rgba(231, 76, 60, 1); }
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(45deg, #4a90e2, #357abd);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(45deg, #357abd, #2c5aa0);
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.15);
+  }
+</style>
+{% endblock %}

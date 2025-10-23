@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto p-6">
+  <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+    <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
+    <p>Are you sure you want to delete the book:</p>
+    <p class="font-semibold mt-2">"{{ book.title }}" by {{ book.author }}</p>
+    <form method="post" class="mt-6">
+      {% csrf_token %}
+      <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Yes, Delete</button>
+      <a href="{% url 'books:delete_books_view' %}" class="ml-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

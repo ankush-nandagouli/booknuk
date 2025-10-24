@@ -12,7 +12,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = ['booknuk.onrender.com']
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://booknuk.onrender.com',
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 # Application definition
 
 INSTALLED_APPS = [

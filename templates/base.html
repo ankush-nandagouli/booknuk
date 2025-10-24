@@ -25,10 +25,11 @@
 {% if request.path == '/' %}
 <!-- Landing Video Section -->
 <div id="landing-video-section" class="relative w-full h-screen overflow-hidden flex items-center justify-center parallax">
-  <video autoplay muted playsinline loop class="inset-0 w-full h-full object-cover object-center z-0">
+<!--  <video autoplay muted playsinline loop class="inset-0 w-full h-full object-cover object-center z-0">
     <source src="https://res.cloudinary.com/dkmyl30gz/video/upload/v1761236574/landing_klnajk.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+    Your browser does not support the video tag. 
+  </video> -->
+  WELCOME TO BOOKNUK
 </div>
 {% endif %}
 {% if request.path != '/' %}
@@ -63,7 +64,7 @@
 
       <!-- Logo -->
       <a href="{% url 'home' %}" class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600 tracking-tight hover:scale-110 transform transition duration-300 magnet">
-       Digital Library
+       BookNuk
       </a>
 
       <!-- Desktop Menu -->
@@ -195,7 +196,7 @@
     <div class="hover:scale-[1.02] transition-transform duration-300 parallax">
       <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-3">About Us</h3>
       <p class="leading-relaxed opacity-90">
-        E - Library is dedicated to empowering students with a modern reading experience,
+        BookNuk is dedicated to empowering students with a modern reading experience,
         offering access to knowledge through physical and digital resources.
       </p>
     </div>
@@ -242,7 +243,7 @@
 
   <!-- Bottom -->
   <div class="border-t bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 py-4 text-center text-xs text-gray-500 dark:text-gray-400 magnet">
-    &copy; <span class="hover:underline">E - Library</span>. Developed with
+    &copy; <span class="hover:underline">BookNuk</span>. Developed with
     <span class="text-red-600 animate-pulse">❤️</span> by
     <span class="text-blue-600 dark:text-blue-400 font-medium hover:underline">Ankush Nandagouli</span>.
   </div>

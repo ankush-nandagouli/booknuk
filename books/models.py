@@ -59,7 +59,7 @@ class Book(models.Model):
         # Cloudinary handles size limits differently
     )
 
-     pdf_file = CloudinaryField(
+    pdf_file = CloudinaryField(
         'raw',  # Use 'raw' for PDF files
         folder='scep-lms/book_pdfs/',
         blank=True,

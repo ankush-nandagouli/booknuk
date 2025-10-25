@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta, date
 from accounts.models import CustomUser
+from cloudinary.models import CloudinaryField
 
 
 # ---------------------

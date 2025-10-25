@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 import uuid
 from django.conf import settings
+from cloudinary.models import CloudinaryField
 
 def generate_library_id():
     """Generate a unique library card ID"""
@@ -38,8 +39,9 @@ class CustomUser(AbstractUser):
     )
 
     # Profile picture for students
-    profile_picture = models.ImageField(
-        upload_to='profile_pics/',
+    profile_picture = CloudinaryField(
+        'image',
+        folder='lms/profile_pics/',
         blank=True,
         null=True,
         help_text="Student's profile image"

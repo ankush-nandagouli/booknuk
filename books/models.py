@@ -50,24 +50,22 @@ class Book(models.Model):
         help_text="Enter a unique ISBN (leave blank if not available)"
     )
 
-    cover_image = models.ImageField(
+    cover_image = CloudinaryField(
+        'image',
+        folder='scep-lms/book_covers/',
         blank=True,
         null=True,
         help_text="Upload JPG or PNG image",
-        validators=[
-            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp']),
-            validate_image_size
-        ]
+        # Cloudinary handles size limits differently
     )
 
-    pdf_file = models.FileField(
+     pdf_file = CloudinaryField(
+        'raw',  # Use 'raw' for PDF files
+        folder='scep-lms/book_pdfs/',
         blank=True,
         null=True,
         help_text="Upload a PDF file",
-        validators=[
-            FileExtensionValidator(allowed_extensions=['pdf']),
-            validate_pdf_size
-        ]
+        resource_type='raw'  # Important for non-image files
     )
 
     available = models.BooleanField(default=True)

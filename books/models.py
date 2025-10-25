@@ -51,7 +51,6 @@ class Book(models.Model):
     )
 
     cover_image = models.ImageField(
-        upload_to='book_covers/',
         blank=True,
         null=True,
         help_text="Upload JPG or PNG image",
@@ -62,7 +61,6 @@ class Book(models.Model):
     )
 
     pdf_file = models.FileField(
-        upload_to='book_pdfs/',
         blank=True,
         null=True,
         help_text="Upload a PDF file",
